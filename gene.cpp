@@ -47,25 +47,39 @@ public:
 
     //method of Mutation of gene in RNA:
     string MutationRna(char a, char b, int n) {
-        int i =0;
-        int j =0; //movement step
+        int i = 0;
+        int j = 0; //movement step
         while (i <= n) {
             if (RNA[j] == a) {
                 RNA[j] = b;
                 i++;
                 j++;
-                if (i==n) { break;}
+                if (i == n) { break; }
             } else {
                 j++;
             }
-
         }
         return RNA;
-
     }
 
     //method of Mutation of gene in DNA:
 
+    string MutationDna(char a, char b, int n) {
+        int i = 0;
+        int j = 0; //movement step
+        while (i <= n) {
+            if (DNA[j] == a) {
+                DNA[j] = b;
+                i++;
+                j++;
+                if (i == n) { break; }
+            } else {
+                j++;
+            }
+        }
+        cout << DNA;
+        cout << make_Dna(DNA);
+    }
 
 
 
