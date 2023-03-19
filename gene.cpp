@@ -31,18 +31,18 @@ public:
         string y;
         x = r1.lenght();
         for (int i = 0; i < x; i++) {
-            if (r1[i] == "A") {
-                y += "T";
-            } else if (r1[i] == "T") {
-                y += "A";
-            } else if (r1[i] == "C") {
-                y += "G";
-            } else if (r1[i] == "G") {
-                y += "C";
+            if (r1[i] == 'A') {
+                y += 'T';
+            } else if (r1[i] == 'T') {
+                y += 'A';
+            } else if (r1[i] == 'C') {
+                y += 'G';
+            } else if (r1[i] == 'G') {
+                y += 'C';
             }
 
         }
-
+        return y;
     }
 
     //method of Mutation of gene in RNA:
