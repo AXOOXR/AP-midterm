@@ -13,10 +13,10 @@ private:
 
 public:
     //RNA
-    viod setRna(string r) { RNA = r; } //setter
+    void setRna(string r) { RNA = r; } //setter
     string getRna() { return RNA; } //getter
     //DNA
-    viod setDna(string d, string md) { //setter
+    void setDna(string d, string md) { //setter
         DNA = d;
         MDNA = md;
     }
@@ -60,8 +60,13 @@ public:
             }
 
         }
+        return RNA;
 
     }
+
+    //method of Mutation of gene in DNA:
+
+
 
 
 
