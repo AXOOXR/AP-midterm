@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-
+#include <algorithm>
 using namespace std;
 
 class Gene {
@@ -64,7 +64,7 @@ public:
 
     //method of Mutation of gene in DNA:
 
-    string MutationDna(char a, char b, int n) {
+    void MutationDna(char a, char b, int n) {
         int i = 0;
         int j = 0; //movement step
         while (i <= n) {
@@ -80,6 +80,9 @@ public:
         cout << DNA;
         cout << make_Dna(DNA);
     }
+
+    //Big  Mutation:
+
 
 
 
