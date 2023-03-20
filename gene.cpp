@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <string>
 #include <algorithm>
 
 using namespace std;
@@ -9,12 +9,11 @@ private:
     string RNA;
     string DNA;
     string MDNA; //mokamel DNA
-    void reverse_String(string &greet, int n, int i = 0) {
-
-        if (n <= i) { return; }
-
-        swap(greet[i], greet[n]);
-        reverse_String(greet, n - 1, i + 1);
+    string reverse1(string str) {
+        string rts;
+        for (int i = str.length() - 1; i >= 0; i--)
+            rts = str[i];
+        return rts;
     }
 
 
@@ -28,7 +27,7 @@ public:
         MDNA = md;
     }
 
-    string getDna() { return DNA, MDNA } //getter
+    string getDna() { return DNA, MDNA; } //getter
 
     //----------------------------------------------------------------------------
 
@@ -36,7 +35,7 @@ public:
     string make_Dna(string r1) {
         int x;
         string y;
-        x = r1.lenght();
+        x = r1.length();
         for (int i = 0; i < x; i++) {
             if (r1[i] == 'A') {
                 y += 'T';
@@ -98,8 +97,8 @@ public:
     void BigMutationRna(string r, string t) {
         int x, y;
         x = RNA.find(r);
-        y = x + t.lenght();
-        RNA[x, y] = t;
+        y = t.length();
+        RNA.replace(x, y, t);
         cout << RNA << endl;
     }
 
@@ -108,8 +107,8 @@ public:
     void BigMutationDna(string r, string t) {
         int x, y;
         x = RNA.find(r); //ابتدا بازه
-        y = x + t.lenght(); // انتها بازه
-        RNA[x, y] = t;  // جای گزینی اون با رشته مد نظر
+        y = t.length(); // انتها بازه
+        RNA.replace(x, y, t);  // جای گزینی اون با رشته مد نظر
         cout << RNA << "\n" << make_Dna(RNA) << endl;
     }
 
@@ -118,22 +117,24 @@ public:
     void ReverseRna(string rt) { //rt ke input function
         int x, y;
         string rrt; //reverse rt
-        y = x + rt.length();
-        x = RNA.find(rt); //موقعیت رشته اول اون ورودی مارو بهمون میده که برای راحتی اوی متغییر ذخیره میکنیم
-        rrt = reverse_String(rt, rt.length() - 1, 0);
-        RNA[x, y] = rrt;
+
+        x = RNA.find(rt); //
+        y = rt.length();
+        // موقعیت رشته اول اون ورودی مارو بهمون میده که برای راحتی اوی متغییر ذخیره میکنیم
+        rrt = reverse1(rt);
+        RNA.replace(x, y, rrt);
         cout << RNA << endl;
     }
 
     //----------------------------------------------------------------------------
 
-    void ReverseRna(string rt) { //rt ke input function
+    void ReverseDna(string rt) { //rt ke input function
         int x, y;
         string rrt; //reverse rt
-        y = x + rt.length();
+        y = rt.length();
         x = RNA.find(rt); //موقعیت رشته اول اون ورودی مارو بهمون میده که برای راحتی اوی متغییر ذخیره میکنیم
-        rrt = reverse_String(rt, rt.length() - 1, 0);
-        RNA[x, y] = rrt;
+        rrt = reverse1(rt);
+        RNA.replace(x, y, rrt);
         cout << RNA << "\t";
         cout << make_Dna(RNA) << endl;
         // the gene class finish
