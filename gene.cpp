@@ -144,3 +144,15 @@ public:
         //----------------------------------------------------------------------------
     }
 };
+
+class Cell : public Gene
+{
+private:
+    int n; //number of coromozom
+public:
+    void celldeath(string q){
+        
+
+    }
+
+};
