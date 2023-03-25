@@ -189,11 +189,11 @@ public:
                 size_t found1 = r.find('AT');
                 size_t found2 = r.find('CG');
                 if (found1 != string::npos) {
-                    pos1 +=1;
-                } else if (found2 != string::npos){
-                    pos2 +=1;
+                    pos1 += 1;
+                } else if (found2 != string::npos) {
+                    pos2 += 1;
                 }
-                if (pos1+pos2 ==0) {
+                if (pos1 + pos2 == 0) {
                     coromozoms[n1] = '0';
                     break;
                 }
@@ -219,12 +219,35 @@ public:
             }
         }
         //----------------------------------------------------------------------------
-        if (count > (3 *count2)) {
+        if (count > (3 * count2)) {
             coromozoms[n1] = '0';
         }
     }
+
     //end of celldeath
     //----------------------------------------------------------------------------
+    //متود جهش بزرگ را بازنویسی کنید. )همنام با متود جهش بزرگ در کلاس
+    //Gene)
+    void BigMutationDna(string ss1, int nn, string ss2, int mm) {
+        string c1;
+        string c2;
+        string s1 = ss1;
+        c1 = coromozoms[nn];
+        c2 = coromozoms[mm];
+        int x1, y1; // x1 = first char of ss1 in c1 , y1 = length ss1
+        x1 = c1.find(ss1);
+        y1 = ss1.length();
+        int x2, y2; // x2 = first char of ss2 in c2 , y2 = length ss2
+        x2 = c2.find(ss2);
+        y2 = ss2.length();
+        //-------------------
+        c1.replace(x1,y1,ss2);
+        c2.replace(x2,y2,ss1);
+        //-------------------
+        cout << c1 << "\t" << make_Dna(c1)<< "\n" << c2 << "\t" <<make_Dna(c2)<<endl;
+    }
+    //----------------------------------------------------------------------------
+
 
 
 
