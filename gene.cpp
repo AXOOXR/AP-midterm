@@ -149,10 +149,10 @@ class Cell : public Gene
 {
 private:
     int n; //number of coromozom
+    string
 public:
-    void celldeath(string q){
+    void deadcell(int a){cout << a;};
+
         
 
-    }
-
-};
+    };
