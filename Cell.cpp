@@ -127,7 +127,7 @@ public:
 
         x = RNA.find(rt); //
         y = rt.length();
-        // موقعیت رشته اول اون ورودی مارو بهمون میده که برای راحتی اوی متغییر ذخیره میکنیم
+        // موقعیت رشته اول اون ورودی مارو بهمون میده که برای راحتی اوی متغیر ذخیره میکنیم
         rrt = reverse1(rt);
         RNA.replace(x, y, rrt);
         cout << RNA << endl;
@@ -139,7 +139,7 @@ public:
         int x, y;
         string rrt; //reverse rt
         y = rt.length();
-        x = RNA.find(rt); //موقعیت رشته اول اون ورودی مارو بهمون میده که برای راحتی اوی متغییر ذخیره میکنیم
+        x = RNA.find(rt); //موقعیت رشته اول اون ورودی مارو بهمون میده که برای راحتی اوی متغیر ذخیره میکنیم
         rrt = reverse1(rt);
         RNA.replace(x, y, rrt);
         cout << RNA << "\t";
@@ -257,6 +257,24 @@ public:
     }
     //----------------------------------------------------------------------------
     //متود جهش کوچک را بازنویسی کنید.
+    void MutationDna(char a, char b, int n, int m) {
+        string s = coromozoms[m];
+        int i = 0;
+        int j = 0; //movement step
+        while (i <= n) {
+            if (s[j] == a) {
+                s[j] = b;
+                i++;
+                j++;
+                if (i == n) { break; }
+            } else {
+                j++;
+            }
+        }
+        cout << s << "\t";
+        cout << make_Dna(s) << endl;
+    }
+
 
     //----------------------------------------------------------------------------
     //متود جهش معکوس را بازنویسی کنید
@@ -277,6 +295,7 @@ public:
             end--;
         }
         cout << str <<endl;
+        cout << make_Dna(str)<<endl;
         coromozoms[n] = str;
     }
 
@@ -297,9 +316,14 @@ public:
             }
 
         }
-        return longestPalindrome;
+        return longestPalindrome, make_Dna(longestPalindrome);
 
     }
+    //the class cell finished Successfully.
+    //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+
 
 
 
