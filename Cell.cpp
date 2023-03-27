@@ -257,8 +257,29 @@ public:
     }
     //----------------------------------------------------------------------------
     //متود جهش کوچک را بازنویسی کنید.
+
     //----------------------------------------------------------------------------
     //متود جهش معکوس را بازنویسی کنید
+    void reverseSubstring(string substring, int n) {
+        string str = coromozoms[n];
+        int start = str.find(substring);
+        if (start == string::npos) {
+            cout << "Substring not found in string" << endl;
+            return;
+        }
+
+        int end = start + substring.length() - 1;
+        while (start < end) {
+            char temp = str[start];
+            str[start] = str[end];
+            str[end] = temp;
+            start++;
+            end--;
+        }
+        cout << str <<endl;
+        coromozoms[n] = str;
+    }
+
     //----------------------------------------------------------------------------
     //متودی برای پیدا کردن پالیندروم
     string findLongestPalindrome(int n) {
