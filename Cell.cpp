@@ -156,6 +156,15 @@ class Cell : public Gene {
 private:
     int n; //number of coromozom
     vector<string> coromozoms;
+    bool isPalindrome(string s){
+        int n = s.length();
+        for(int i=0; i<n/2; i++){
+            if(s[i] != s[n-i-1]){
+                return false;
+            }
+        }
+        return true;
+    }
 public:
 
     void setN(int n1) { n = n1; }
@@ -248,8 +257,28 @@ public:
     }
     //----------------------------------------------------------------------------
     //متود جهش کوچک را بازنویسی کنید.
+    //----------------------------------------------------------------------------
+    //متود جهش معکوس را بازنویسی کنید
+    //----------------------------------------------------------------------------
+    //متودی برای پیدا کردن پالیندروم
+    string findLongestPalindrome(int n) {
+        string s;
+        s = coromozoms[n];
+        int n2 = s.length();
+        string longestPalindrome = "";
 
+        for (int i = 0; i < n2; i++) {
+            for (int j = i + 2; j <= n2; j++) {
+                string substring = s.substr(i, j - i);
+                if (isPalindrome(substring) && substring.length() > longestPalindrome.length()) {
+                    longestPalindrome = substring;
+                }
+            }
 
+        }
+        return longestPalindrome;
+
+    }
 
 
 
