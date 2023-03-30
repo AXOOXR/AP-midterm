@@ -104,24 +104,5 @@ void Animal::sexual_reproduction(vector<string> a1, vector<string> b1) {
     }
 }
 //------------------------------------------------------------------
-void Animal::DHV(vector<string> input,string rna) {
-    string rna1;
-    rna1 = make_Dna(rna);
-    for (int i = 0; i < input.size() ; ++i) {
-        string rr;
-        rr = input[i];
-        size_t index1= rr.find(rna);
-        size_t index2 = rr.find(rna1);
-
-        if (index1 == std::string::npos){
-            cout<< "False"<<endl;
-        } else if (index2 == std::string::npos){
-            cout << "False" <<endl;
-        } else{
-            cout << "True" <<endl;
-        }
-    }
-}
-
 
 

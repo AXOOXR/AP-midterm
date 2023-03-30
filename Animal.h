@@ -7,6 +7,7 @@
 
 #endif //AP_MIDTERM_ANIMAL_H
 #include "Cell.h"
+#include "VIRUS.h"
 #include <iostream>
 #include <iostream>
 #include <string>
@@ -23,9 +24,7 @@ public:
     string ORE(vector<string> vec11, vector<string> vec12); //Operator rewrite equally
     vector<string> duplicateStrings(vector<string> input);   //Asexual reproduction
     void sexual_reproduction(vector<string> a1,vector<string> b1);
+    friend class VIRUS;
     //----------------------------------------------------------------------------
     //----------------------------------------------------------------------------
-    //A method to detect the harmfulness of the virus  -> DHV
-    //EXTRA POINT
-    void DHV(vector<string> input ,string rna);
 };
