@@ -29,7 +29,7 @@ float Animal::PGS(vector<string> vec1, vector<string> vec2) {
     float percentage = (float) numSame / (float) size1 * 100.0;
     return percentage;
 
-};
+}
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ string Animal::ORE(vector<string> vec11, vector<string> vec12) {
     } else {
         return "False";
     }
-};
+}
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ vector<string> Animal::duplicateStrings(vector<string> input) {
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-vector<string> Animal::sexual_reproduction(vector<string> a1, vector<string> b1) {
+void Animal::sexual_reproduction(vector<string> a1, vector<string> b1) {
     vector<string> output1;
     vector<string> output2;
 
@@ -93,15 +93,34 @@ vector<string> Animal::sexual_reproduction(vector<string> a1, vector<string> b1)
     }
     if (n1 % 2 != 0) {
         if (n2 % 2 != 0) {
-
-            return random;
+            for (int i = 0; i < random.size(); ++i) {
+                cout << random[i]<<endl;
+            }
         }else {
             cout << "n is odd im sorry"<<endl;
         }
     } else {
         cout << "n is odd im sorry"<<endl;
     }
+}
+//------------------------------------------------------------------
+void Animal::DHV(vector<string> input,string rna) {
+    string rna1;
+    rna1 = make_Dna(rna);
+    for (int i = 0; i < input.size() ; ++i) {
+        string rr;
+        rr = input[i];
+        size_t index1= rr.find(rna);
+        size_t index2 = rr.find(rna1);
 
+        if (index1 == std::string::npos){
+            cout<< "False"<<endl;
+        } else if (index2 == std::string::npos){
+            cout << "False" <<endl;
+        } else{
+            cout << "True" <<endl;
+        }
+    }
 }
 
 

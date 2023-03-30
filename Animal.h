@@ -1,5 +1,5 @@
 //
-// Created by zalia on 3/30/2023.
+// Created by AliZali on 3/30/2023.
 //
 
 #ifndef AP_MIDTERM_ANIMAL_H
@@ -20,7 +20,12 @@ private:
 
 public:
     float PGS(vector<string> vec1, vector<string> vec2); //percentage of genetic similarity
-    string ORE(vector<string> vec11, vector<string> vec12); //Operator rewrite equall
+    string ORE(vector<string> vec11, vector<string> vec12); //Operator rewrite equally
     vector<string> duplicateStrings(vector<string> input);   //Asexual reproduction
-    vector<string> sexual_reproduction(vector<string> a1,vector<string> b1);
+    void sexual_reproduction(vector<string> a1,vector<string> b1);
+    //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    //A method to detect the harmfulness of the virus  -> DHV
+    //EXTRA POINT
+    void DHV(vector<string> input ,string rna);
 };
