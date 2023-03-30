@@ -30,6 +30,7 @@ float Animal::PGS(vector<string> vec1, vector<string> vec2) {
     return percentage;
 
 };
+
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 string Animal::ORE(vector<string> vec11, vector<string> vec12) {
@@ -39,6 +40,7 @@ string Animal::ORE(vector<string> vec11, vector<string> vec12) {
         return "False";
     }
 };
+
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 vector<string> Animal::duplicateStrings(vector<string> input) {
@@ -46,7 +48,7 @@ vector<string> Animal::duplicateStrings(vector<string> input) {
     vector<string> random;
     int n;
     n = input.size();
-    for (const auto& str : input) {
+    for (const auto &str: input) {
         output.push_back(str);
         output.push_back(str);
 
@@ -58,6 +60,7 @@ vector<string> Animal::duplicateStrings(vector<string> input) {
     }
     return random;
 }
+
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 vector<string> Animal::sexual_reproduction(vector<string> a1, vector<string> b1) {
@@ -71,7 +74,7 @@ vector<string> Animal::sexual_reproduction(vector<string> a1, vector<string> b1)
         output1.push_back(str);
         output1.push_back(str);
     }
-    for (int i = 0; i < n1/2; ++i) {
+    for (int i = 0; i < n1 / 2; ++i) {
         srand(time(NULL)); // seed the random number generator with the current time
         int random_number = rand() % n1 + 1; // generate a random number in the range [1, n]
         random[i] = a1[random_number];
@@ -83,12 +86,22 @@ vector<string> Animal::sexual_reproduction(vector<string> a1, vector<string> b1)
     }
     int n2;
     n2 = b1.size();
-    for (int i = 0; i < n2/2; ++i) {
+    for (int i = 0; i < n2 / 2; ++i) {
         srand(time(NULL)); // seed the random number generator with the current time
         int random_number = rand() % n2 + 1; // generate a random number in the range [1, n]
         random[i] = b1[random_number];
     }
-    return random;
+    if (n1 % 2 != 0) {
+        if (n2 % 2 != 0) {
+
+            return random;
+        }else {
+            cout << "n is odd im sorry"<<endl;
+        }
+    } else {
+        cout << "n is odd im sorry"<<endl;
+    }
+
 }
 
 
