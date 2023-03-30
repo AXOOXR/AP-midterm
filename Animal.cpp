@@ -41,5 +41,55 @@ string Animal::ORE(vector<string> vec11, vector<string> vec12) {
 };
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
+vector<string> Animal::duplicateStrings(vector<string> input) {
+    vector<string> output;
+    vector<string> random;
+    int n;
+    n = input.size();
+    for (const auto& str : input) {
+        output.push_back(str);
+        output.push_back(str);
+
+    }
+    for (int i = 0; i < n; ++i) {
+        srand(time(NULL)); // seed the random number generator with the current time
+        int random_number = rand() % n + 1; // generate a random number in the range [1, n]
+        random[i] = output[random_number];
+    }
+    return random;
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+vector<string> Animal::sexual_reproduction(vector<string> a1, vector<string> b1) {
+    vector<string> output1;
+    vector<string> output2;
+
+    vector<string> random;
+    int n1;
+    n1 = a1.size();
+    for (const auto &str: a1) {
+        output1.push_back(str);
+        output1.push_back(str);
+    }
+    for (int i = 0; i < n1/2; ++i) {
+        srand(time(NULL)); // seed the random number generator with the current time
+        int random_number = rand() % n1 + 1; // generate a random number in the range [1, n]
+        random[i] = a1[random_number];
+    }
+
+    for (const auto &str: b1) {
+        output2.push_back(str);
+        output2.push_back(str);
+    }
+    int n2;
+    n2 = b1.size();
+    for (int i = 0; i < n2/2; ++i) {
+        srand(time(NULL)); // seed the random number generator with the current time
+        int random_number = rand() % n2 + 1; // generate a random number in the range [1, n]
+        random[i] = b1[random_number];
+    }
+    return random;
+}
+
 
 

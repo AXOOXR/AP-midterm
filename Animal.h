@@ -21,5 +21,6 @@ private:
 public:
     float PGS(vector<string> vec1, vector<string> vec2); //percentage of genetic similarity
     string ORE(vector<string> vec11, vector<string> vec12); //Operator rewrite equall
-
+    vector<string> duplicateStrings(vector<string> input);   //Asexual reproduction
+    vector<string> sexual_reproduction(vector<string> a1,vector<string> b1);
 };
