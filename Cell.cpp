@@ -195,8 +195,8 @@ public:
             for (int j = i; j < i + 5; ++j) {
                 int pos1 = 0, pos2 = 0;
                 string r = m.substr(i, 5);
-                size_t found1 = r.find('AT');
-                size_t found2 = r.find('CG');
+                size_t found1 = r.find("AT");
+                size_t found2 = r.find("CG");
                 if (found1 != string::npos) {
                     pos1 += 1;
                 } else if (found2 != string::npos) {
@@ -257,16 +257,16 @@ public:
     }
     //----------------------------------------------------------------------------
     //متود جهش کوچک را بازنویسی کنید.
-    void MutationDna(char a, char b, int n, int m) {
+    void MutationDna(char a, char b, int n1, int m) {
         string s = coromozoms[m];
         int i = 0;
         int j = 0; //movement step
-        while (i <= n) {
+        while (i <= n1) {
             if (s[j] == a) {
                 s[j] = b;
                 i++;
                 j++;
-                if (i == n) { break; }
+                if (i == n1) { break; }
             } else {
                 j++;
             }
@@ -278,8 +278,8 @@ public:
 
     //----------------------------------------------------------------------------
     //متود جهش معکوس را بازنویسی کنید
-    void reverseSubstring(string substring, int n) {
-        string str = coromozoms[n];
+    void reverseSubstring(string substring, int n1) {
+        string str = coromozoms[n1];
         int start = str.find(substring);
         if (start == string::npos) {
             cout << "Substring not found in string" << endl;
@@ -296,14 +296,14 @@ public:
         }
         cout << str <<endl;
         cout << make_Dna(str)<<endl;
-        coromozoms[n] = str;
+        coromozoms[n1] = str;
     }
 
     //----------------------------------------------------------------------------
     //متودی برای پیدا کردن پالیندروم
-    string findLongestPalindrome(int n) {
+    string findLongestPalindrome(int n1) {
         string s;
-        s = coromozoms[n];
+        s = coromozoms[n1];
         int n2 = s.length();
         string longestPalindrome = "";
 
