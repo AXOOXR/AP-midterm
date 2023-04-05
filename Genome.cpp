@@ -10,17 +10,9 @@ class Genome {
 private:
     string RNA;
     string DNA[2];
-    // We define a reverse function which will be used later on
-    string reverse(string s){
-        string Reversed_s;
-        for (int i = s.length() - 1; i >= 0; i--)
-            Reversed_s += s[i];
-
-        return Reversed_s;
-    }
 
 public:
-    // Constructor
+    // The main Constructor
     Genome(string dna, string sdna, string rna){
         DNA[0] = dna;
         DNA[1] = sdna;
@@ -29,10 +21,10 @@ public:
             cout << "The DNA threads do not supplement each other." << endl;
     }
 
+    //An empty default constructor which we need since we
     Genome(){}
 
-    //Here we define the getters for RNA and DNA
-
+    //Here we define the getters for RNA and DNA threads
     string GetDNA(){
         return DNA[0];
     }
@@ -44,6 +36,8 @@ public:
     string GetRNA(){
         return RNA;
     }
+
+    string reverse(string s);
 
     //A method for creating the DNA threads out of an RNA thread
     void MakeDNAoutofRNA(string s);
@@ -71,14 +65,7 @@ private:
 
     // Here we define a function type boolean that determines whether a string is palindrome or not which
     // will be used later on in the program
-    bool isPalindrome(string s){
-        int n = s.length();
-        for(int i = 0; i < n / 2 ; i++){
-            if(s[i] != s[n - i - 1])
-                return false;
-        }
-        return true;
-    }
+    
 
 public:
 
@@ -89,6 +76,8 @@ public:
     int GetNumberOfChromozomes(){ 
         return NumberOfChromozomes; 
     }
+
+    bool isPalindrome(string s);
 
     void SetChromozomes(){
         for (int i = 0; i < NumberOfChromozomes; i++){
@@ -132,29 +121,20 @@ public:
     // In this section we redefine DNA mutations
     void BigMutationDNA(string ss1, int nn, string ss2, int mm);
     void SmallMutationDNA(char a, char b, int n, int m);
-    void reverseSubstring(string substring, int n);
-    void findLongestPalindrome(int n);
+
+    //void reverseSubstring(string substring, int n);
+    void ReverseMutationDNA(string s1, int n);
+    void FindSupplementPalindromes(int n);
 };
 
 // Here are the methods of class Genome
-void Genome::MakeDNAoutofRNA(string s){
-    string ss;
-    int x = s.length();
-    for (int i = 0; i < x; i++) {
-        if (s[i] == 'A')
-            ss += 'T';
-         
-        else if (s[i] == 'T')
-            ss += 'A';
 
-        else if (s[i] == 'C') 
-            ss += 'G';
+string Genome::reverse(string s){
+    string Reversed_s;
+    for (int i = s.length() - 1; i >= 0; i--)
+        Reversed_s += s[i];
 
-        else if (s[i] == 'G') 
-            ss += 'C';
-        }
-    
-    cout << "The DNA threads made out of this RNA thread: " << s << '\t' << ss << endl;
+    return Reversed_s;
 }
 
 string Genome::Supplement(string s){
@@ -176,6 +156,26 @@ string Genome::Supplement(string s){
     return ss;
 }
 
+void Genome::MakeDNAoutofRNA(string s){
+    string ss;
+    int x = s.length();
+    for (int i = 0; i < x; i++) {
+        if (s[i] == 'A')
+            ss += 'T';
+         
+        else if (s[i] == 'T')
+            ss += 'A';
+
+        else if (s[i] == 'C') 
+            ss += 'G';
+
+        else if (s[i] == 'G') 
+            ss += 'C';
+        }
+    
+    cout << "The DNA threads made out of this RNA thread: " << s << '\t' << ss << endl;
+}
+
 void Genome::SmallMutationRNA(char a, char b, int n){
     int i = 0;
     int j = 0; //movement step
@@ -195,8 +195,7 @@ void Genome::SmallMutationRNA(char a, char b, int n){
 }
 
 void Genome::SmallMutationDNA(char a, char b, int n){
-    int i = 0;
-    int j = 0; //movement step
+    int i = 0, j = 0;
     while (i <= n){
         if (DNA[0][j] == a){
             DNA[0][j] = b;
@@ -370,8 +369,8 @@ void Genome::ReverseMutationRNA(string& s1){
 }
 
 void Genome::ReverseMutationDNA(string& s1){
-    string Reversed_s = reverse(s1);
-    string Reversed_supplement_s = reverse(Supplement(s1));
+    string Reversed_s1 = reverse(s1);
+    string Reversed_supplement_s1 = reverse(Supplement(s1));
 
     // In this section we use the find funtion which will return the index of the first occurance of 
     // the substring in the string from the given starting position 
@@ -379,15 +378,25 @@ void Genome::ReverseMutationDNA(string& s1){
     int x = DNA[0].find(s1);
 
     // Replaces y characters from xth index by Reversed_s
-    DNA[0].replace(x, y, Reversed_s);
+    DNA[0].replace(x, y, Reversed_s1);
 
     // Replaces y characters from xth index by Reversed_supplement_s
-    Supplement(DNA[0]).replace(x, y, Reversed_supplement_s);
+    Supplement(DNA[0]).replace(x, y, Reversed_supplement_s1);
 
     cout << "The DNA threads after reverse mutation: " << DNA[0] << '\t' << Supplement(DNA[0]) << endl;
 }
 
 // Here are the methods of class Cell
+
+bool Cell::isPalindrome(string s){
+    int n = s.length();
+    for(int i = 0; i < n / 2 ; i++){
+        if(s[i] != s[n - i - 1])
+            return false;
+    }
+    return true;
+}
+
 void Cell::CellDeath(){
     for (int i = 0; i < chromozomes.size(); i++){
         cout << "Round: " << i << endl;
@@ -468,76 +477,120 @@ void Cell::CellDeath(){
     c2.replace(x2,y2,ss1);
        
     cout << c1 << '\t' << Supplement(c1)<< '\n' << c2 << '\t' << Supplement(c2)<<endl;
-}
+}*/
+
+/*void Cell::BigMutationDNA(string& s1, int n, string& s2, int m){
+    string ch1 = chromozomes[n].GetDNA();
+    string ch2 = chromozomes[m].GetDNA();
+    string ch11 = chromozomes[n].GetSDNA();
+    string ch22 = chromozomes[m].GetSDNA();
+
+    string ss1 = Supplement(s1);
+    string ss2 = Supplement(s2);
+
+    string ans = "";
+    string anss= "";
+    bool check1 = true;
+    bool check2;
+
+    for (int i = 0; i < )
+
+
+
+
+}*/
 
 void Cell::SmallMutationDNA(char a, char b, int n, int m){
-     string s = chromozomes[m];
-        int i = 0;
-        int j = 0; //movement step
-        while (i <= n) {
-            if (s[j] == a) {
-                s[j] = b;
-                i++;
-                j++;
-                if (i == n)
-                    break;
+    // We have to minus integer m by 1 because the indexes in vectors start with 0
+    // and we want to target the mth chromozome
+    cout << "GUTS";
+    string s1 = chromozomes[m - 1].GetDNA();
+    string s2 = chromozomes[m - 1].GetSDNA();
+    int i = 0, j = 0;
 
-            else
-                j++;
+    while (i <= n){
+        if (s1[j] == a){
+            s1[j] = b;
+            i++;
+            j++;
+            if (i == n)
+                break;
+        }
+
+        else if(s2[j] == a){
+            if(b == 'G')
+                s1[j] = 'C';
+
+            else if (b == 'C')
+                s1[j] = 'G';
             
-            }
-        }
+            else if (b == 'T')
+                s1[j] = 'A';
+            
+            else if (b == 'A')
+                s1[j] = 'T';
 
-        cout << s << '\t' << Supplement(s) << endl;
+            i++;
+            j++;
+
+            if(i == n)
+                break;
+        }   
+
+        else
+            j++; 
+    }
+    cout << s1 << '\t' << Supplement(s1) << endl;
 }
 
-void Cell::reverseSubstring(string substring, int n){
-    string str = chromozoms[n];
-        int start = str.find(substring);
-        if (start == string::npos) {
-            cout << "Substring not found in string" << endl;
-            return;
-        }
+void Cell::ReverseMutationDNA(string s1, int n){
+    string s2 = Supplement(s1);
 
-        int end = start + substring.length() - 1;
-        while (start < end) {
-            char temp = str[start];
-            str[start] = str[end];
-            str[end] = temp;
-            start++;
-            end--;
-        }
-        cout << str << endl;
-        cout << Supplement(str)<<endl;
-        chromozoms[n] = str;
+    // We have to minus integer n by 1 because the indexes in vectors start with 0
+    // and we want to target the nth chromozome
+    string s3 = chromozomes[n - 1].GetDNA();
+    string s4 = chromozomes[n - 1].GetSDNA();
+    string Reversed_s1 = reverse(s1);
+    string Reversed_s2 = reverse(Supplement(s1));
+    
+    int y = s1.length();
+    int x1 = s3.find(s1);
+    int x2 = s4.find(s2);
+
+    if(x1 == string::npos)
+        cout << "The given string was not found in the given chromozome's main DNA thread." << endl;
+
+    if(x2 == string::npos)
+        cout << "The supplement of the given string was not found int the given chromozome's supplemantary DNA thread." << endl;
+    
+    else{
+        s3.replace(x1, y, Reversed_s1);
+        s4.replace(x2, y, Reversed_s2);
+    }
+
+    cout << "The DNA threads after reverse mutation: " << s3 << '\t' << s4 << endl;
+}   
+
+void Cell::FindSupplementPalindromes(int n){
+    string s1 = chromozomes[n - 1].GetDNA();
+    string s2 = chromozomes[n - 1].GetSDNA();
+    
+    
+
 }
 
-void Cell::findLongestPalindrome(int n){
-    string s;
-        s = chromozomes[n];
-        int n2 = s.length();
-        string longestPalindrome = "";
 
-        for (int i = 0; i < n2; i++){
-            for (int j = i + 2; j <= n2; j++){
-                string substring = s.substr(i, j - i);
-
-                if (isPalindrome(substring) && substring.length() > longestPalindrome.length())
-                    longestPalindrome = substring;
-            }
-
-        }
-        cout << longestPalindrome << '\t' << Supplement(longestPalindrome);
-}
-*/
 
 int main(){
-    // You should initialize the onstructor in this order : 1.DNA's main thread 2.DNA's supplemetary thread 3.RNA
-    Cell cell(4);
+    // You should initialize the constructor in this order : 1.DNA's main thread 2.DNA's supplemetary thread 3.RNA
+    Cell cell(2);
     cell.SetChromozomes();
     cell.GetChromozomes();
-    cell.CellDeath();
-    cell.GetChromozomes();
+    //cell.SmallMutationDNA('A', 'C', 2, 2);
+    //cell.ReverseMutationDNA("TCAG", 2);
+    cell.FindLongestPalindrome(2);
+
+    
 }
 
 //genome.MakeDNAoutofRNA(genome.GetRNA());
