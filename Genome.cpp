@@ -50,7 +50,7 @@ public:
     void SmallMutationRNA(char a, char b, int n);
     void SmallMutationDNA(char a, char b, int n);
     void BigMutationRNA(string& s1, string& s2);
-    void BigMutationDNA(string& s1, string& s2);
+    void BigMutationDNA(string s1, string s2);
 
     // In this section we define a funtion that replaces a substring in a string with it's reverse
     // using the reverse function we defined in the beginning of the program 
@@ -70,16 +70,8 @@ private:
 public:
 
     Cell(int number_of_chromozomes){
-        NumberOfChromozomes = number_of_chromozomes;
-    }
+        this -> NumberOfChromozomes = number_of_chromozomes;
 
-    int GetNumberOfChromozomes(){ 
-        return NumberOfChromozomes; 
-    }
-
-    bool isPalindrome(string s);
-
-    void SetChromozomes(){
         for (int i = 0; i < NumberOfChromozomes; i++){
             string s1 = "";
             string s2 = "";
@@ -100,9 +92,15 @@ public:
         }
     }
 
+    int GetNumberOfChromozomes(){ 
+        return NumberOfChromozomes; 
+    }
+
+    bool isSupplementaryPalindrome(string s);
+
     void GetChromozomes(){
         for (int i = 0; i < chromozomes.size(); i++){
-            if ((i + 1) % 10 >= 4)
+            if ((i + 1) % 10 >= 4 || (i + 1) % 10 == 0)
                 cout << "The " << i + 1 << "th chromozome: " << endl;
             else if ((i + 1) % 10 == 3)
                 cout << "The " << i + 1 << "rd chromozome: " << endl;
@@ -115,16 +113,18 @@ public:
         }
     }
 
-    // Cell Death function is based on the chromozome that is being tested
-    void CellDeath();
+    // a method for deleting Cell's object if cell were to die in the program
+    void DeleteThis();
+
+    // Cell Death method is based on the chromozome that is being tested
+    void CellDeath(Cell* cell);
 
     // In this section we redefine DNA mutations
-    void BigMutationDNA(string ss1, int nn, string ss2, int mm);
+    void BigMutationDNA(string s1, int n, string s2, int m);
     void SmallMutationDNA(char a, char b, int n, int m);
-
-    //void reverseSubstring(string substring, int n);
     void ReverseMutationDNA(string s1, int n);
-    void FindSupplementPalindromes(int n);
+
+    void FindSupplementaryPalindromes(int n);
 };
 
 // Here are the methods of class Genome
@@ -272,7 +272,7 @@ void Genome::BigMutationRNA(string& s1, string& s2){
     cout << "The RNA thread after big mutation: "<< ans << endl;
 }
 
-void Genome::BigMutationDNA(string& s1, string& s2){
+/*void Genome::BigMutationDNA(string s1, string s2){
     string s = DNA[0];
     string ss1 = Supplement(s1);
     string ss2 = Supplement(s2);
@@ -351,6 +351,26 @@ void Genome::BigMutationDNA(string& s1, string& s2){
     
     else
         cout << "The DNA threads after big mutations: " << anss << '\t' << Supplement(anss) << endl;
+}*/
+
+void Genome::BigMutationDNA(string s1, string s2){
+    string ss1 = Supplement(s1);
+    string ss2 = Supplement(s2);
+
+    int x1 = DNA[0].find(s1);
+    int x2 = DNA[0].find(ss1);
+
+    if(x1 < x2){
+        DNA[0].erase(x1, s1.length());
+        DNA[0].insert(x1, s2);
+    }
+
+    else{
+        DNA[0].erase(x2, s1.length());
+        DNA[0].insert(x2, ss2);
+    }
+
+    cout << "The DNA threads after big mutations: " <<  DNA[0] << '\t' << Supplement(DNA[0]) << endl;
 }
 
 void Genome::ReverseMutationRNA(string& s1){
@@ -388,36 +408,51 @@ void Genome::ReverseMutationDNA(string& s1){
 
 // Here are the methods of class Cell
 
-bool Cell::isPalindrome(string s){
+bool Cell::isSupplementaryPalindrome(string s){
     int n = s.length();
-    for(int i = 0; i < n / 2 ; i++){
-        if(s[i] != s[n - i - 1])
-            return false;
+    if(n > 3 && n % 2 == 0){
+        for(int i = 0; i < n / 2 ; i++){
+            if(s[i] == 'A' && s[n - i - 1] != 'T')
+                return false;
+        
+            if(s[i] == 'T' && s[n - i - 1] != 'A')
+                return false;
+            
+            if(s[i] == 'G' && s[n - i - 1] != 'C')
+                return false;
+            
+            if(s[i] == 'C' && s[n- i - 1] != 'G')
+                return false;
+        }
     }
+
+    else 
+        return false;
+
     return true;
 }
 
-void Cell::CellDeath(){
+void Cell::DeleteThis(){
+    delete this;
+     cout << "The cell has died." << endl;
+}
+
+void Cell::CellDeath(Cell* cell){
     for (int i = 0; i < chromozomes.size(); i++){
-        cout << "Round: " << i << endl;
-        cout << chromozomes[i].GetDNA() << '\t' << chromozomes[i].GetSDNA() << '\t' << chromozomes[i].GetRNA() << endl;
         bool check = true;
-        int count = 0;
-        int countAT = 0;
-        int countCG = 0;
+        int count = 0, countAT = 0, countCG = 0;
         string s1 = chromozomes[i].GetDNA();
         string s2 = chromozomes[i].GetSDNA();
+
         if(check == true){
             for (int j = 0; j < chromozomes[i].GetDNA().length(); j++){
-                if (s1[j] != Supplement(s2)[j]){
-                    cout << "?" << '\t' << j << '\t' << Supplement(s2)[j] << endl;
+                if (s1[j] != Supplement(s2)[j])
                     count++;
-                }
             
                 if (count > 5){
-                    cout << "!" << endl;
-                    chromozomes.erase(chromozomes.begin() + i);
-                    i--;
+                    cout << "A broken chromozome has been detected!" << endl;
+                    cout << "The broken chromozome is: " << endl;
+                    cout << chromozomes[i].GetDNA() << '\t' << chromozomes[i].GetSDNA() << '\t' << chromozomes[i].GetRNA() << endl;
                     check = false;
                     break;
                 }
@@ -427,83 +462,39 @@ void Cell::CellDeath(){
         if(check == true){
             for (int k = 0; k < chromozomes[i].GetDNA().length(); k++){
             
-                if (s1[k] == 'A' || s1[k] == 'T'){
+                if (s1[k] == 'A' || s1[k] == 'T')
                     countAT++;
-                    cout << "??" << '\t' << k << '\t' << "1" << endl;
-                }
 
-                if (s2[k] == 'A' || s2[k] == 'T'){
+                if (s2[k] == 'A' || s2[k] == 'T')
                     countAT++;
-                    cout << "??" << '\t' <<  k << '\t' << "2" << endl;
-                }
             
-                if (s1[k] == 'C' || s1[k] == 'G'){
+                if (s1[k] == 'C' || s1[k] == 'G')
                     countCG++;
-                    cout << "??" << '\t' << k << '\t' << "3" << endl;
-                }
 
-                if (s2[k] == 'C' || s2[k] == 'G'){
+                if (s2[k] == 'C' || s2[k] == 'G')
                     countCG++;
-                    cout << "??" << '\t' << k << '\t' << "4" << endl;;
-                }
 
                 if(countAT > 3 * countCG && k == chromozomes[i].GetDNA().length() - 1){
-                    cout << countAT << '\t' << countCG << endl;
-                    cout << "!!" << endl;
-                    chromozomes.erase(chromozomes.begin() + i);
-                    i--;
+                    cout << "A broken chromozome has been detected!" << endl;
+                    cout << "The broken chromozome is: " << endl;
+                    cout << chromozomes[i].GetDNA() << '\t' << chromozomes[i].GetSDNA() << '\t' << chromozomes[i].GetRNA() << endl;
                     check = false;
                     break;
                 }
             }
         }
+
+        if(check == false){
+            delete this;
+            cout << "The cell has died." << endl;
+            break;
+        }
     }
 }
-
-/*void Cell::BigMutationDNA(string ss1, int nn, string ss2, int mm){
-    string c1 = chromozomes[nn];
-    string c2 = chromozomes[mm];
-
-    // In this section we use the find funtion which will return the index of the first occurance of 
-    // the substring in the string from the given starting position 
-    int x1 = c1.find(ss1);
-    int y1 = ss1.length();
-    int x2 = c2.find(ss2);
-    int y2 = ss2.length();
-
-    // Replaces y1 characters from x1th index by ss2
-    c1.replace(x1,y1,ss2);
-    // Replaces y2 characters from x2th index by ss1
-    c2.replace(x2,y2,ss1);
-       
-    cout << c1 << '\t' << Supplement(c1)<< '\n' << c2 << '\t' << Supplement(c2)<<endl;
-}*/
-
-/*void Cell::BigMutationDNA(string& s1, int n, string& s2, int m){
-    string ch1 = chromozomes[n].GetDNA();
-    string ch2 = chromozomes[m].GetDNA();
-    string ch11 = chromozomes[n].GetSDNA();
-    string ch22 = chromozomes[m].GetSDNA();
-
-    string ss1 = Supplement(s1);
-    string ss2 = Supplement(s2);
-
-    string ans = "";
-    string anss= "";
-    bool check1 = true;
-    bool check2;
-
-    for (int i = 0; i < )
-
-
-
-
-}*/
 
 void Cell::SmallMutationDNA(char a, char b, int n, int m){
     // We have to minus integer m by 1 because the indexes in vectors start with 0
     // and we want to target the mth chromozome
-    cout << "GUTS";
     string s1 = chromozomes[m - 1].GetDNA();
     string s2 = chromozomes[m - 1].GetSDNA();
     int i = 0, j = 0;
@@ -540,7 +531,51 @@ void Cell::SmallMutationDNA(char a, char b, int n, int m){
         else
             j++; 
     }
-    cout << s1 << '\t' << Supplement(s1) << endl;
+    if(m % 10 >= 4 || m % 10 == 0)
+        cout << "The " << m << "th chromozome's DNA threads after small mutation: " << endl << s1 << '\t' << Supplement(s1) << endl;
+    else if(m % 10 == 3)
+        cout << "The " << m << "rd chromozome's DNA threads after small mutation: " << endl << s1 << '\t' << Supplement(s1) << endl;
+    else if(m % 10 == 2)
+        cout << "The " << m << "nd chromozome's DNA threads after small mutation: " << endl << s1 << '\t' << Supplement(s1) << endl;
+    else if(m % 10 == 1)
+        cout << "The " << m << "st chromozome's DNA threads after small mutation: " << endl << s1 << '\t' << Supplement(s1) << endl;
+}
+
+void Cell::BigMutationDNA(string s1, int n, string s2, int m){
+    string ch1 = chromozomes[n - 1].GetDNA();
+    string ch2 = chromozomes[m - 1].GetDNA();
+    string ss1 = Supplement(s1);
+    string ss2 = Supplement(s2);
+
+    int x1 = ch1.find(s1);
+    int x11 = ch1.find(ss1);
+    int x2 = ch2.find(s2);
+    int x22 = ch2.find(ss2);
+
+    if(x1 < x11 || x11 == -1){
+        ch1.erase(x1, s1.length());
+        ch1.insert(x1, s2);
+    }
+
+    else{
+        ch1.erase(x11, s1.length());
+        ch1.insert(x11, ss2);
+    }
+
+
+    if(x2 < x22 || x22 == -1){
+        ch2.erase(x2, s2.length());
+        ch2.insert(x2, s1);
+    }
+
+    else{
+        ch2.erase(x22, s2.length());
+        ch2.insert(x22, ss1);
+    }
+
+    cout << "The given chromozomes after big mutation: " << endl;
+    cout << ch1 << '\t' << Supplement(ch1) << endl;
+    cout << ch2 << '\t' << Supplement(ch2) << endl;
 }
 
 void Cell::ReverseMutationDNA(string s1, int n){
@@ -568,38 +603,49 @@ void Cell::ReverseMutationDNA(string s1, int n){
         s4.replace(x2, y, Reversed_s2);
     }
 
-    cout << "The DNA threads after reverse mutation: " << s3 << '\t' << s4 << endl;
+    if(n % 10 >= 4 || n % 10 == 0)
+        cout << "The " << n << "th chromozome's DNA threads after reverse mutation: " << endl << s3 << '\t' << s4 << endl;
+    else if(n % 10 == 3)
+        cout << "The " << n << "rd chromozome's DNA threads after reverse mutation: " << endl  << s3 << '\t' << s4 << endl;
+    else if(n % 10 == 2)
+        cout << "The " << n << "nd chromozome's DNA threads after reverse mutation: " << endl << s3 << '\t' << s4 << endl;
+    else if(n % 10 == 1)
+        cout << "The " << n << "st chromozome's DNA threads after reverse mutation: " << endl << s3 << '\t' << s4 << endl;
+
 }   
 
-void Cell::FindSupplementPalindromes(int n){
+void Cell::FindSupplementaryPalindromes(int n){
     string s1 = chromozomes[n - 1].GetDNA();
     string s2 = chromozomes[n - 1].GetSDNA();
-    
-    
 
-}
+    string isSupplementaryPalindrome1 = "";
+    if(n % 10 >= 4 || n % 10 == 0)
+        cout << "The supplementary palindrome substrings in the" << n << "th chromozome: " << endl;
+    else if (n % 10 == 3)
+        cout << "The supplementary palindrome substrings in the" << n << "rd chromozome: " << endl;
+    else if (n % 10 == 2)
+        cout << "The supplementary palindrome substrings in the" << n << "nd chromozome: " << endl;
+    else if (n % 10 == 1)
+        cout << "The supplementary palindrome substrings in the" << n << "st chromozome: " << endl;
 
-
+    for (int i = 0; i < s1.length(); i++){
+        for (int j = i + 2; j <= s1.length(); j++){
+            string substring = s1.substr(i, j - i);
+            if (isSupplementaryPalindrome(substring)){
+                isSupplementaryPalindrome1 = substring;
+                cout << isSupplementaryPalindrome1 << '\t';
+            }       
+        }
+    }
+} 
 
 int main(){
-    // You should initialize the constructor in this order : 1.DNA's main thread 2.DNA's supplemetary thread 3.RNA
-    Cell cell(2);
-    cell.SetChromozomes();
-    cell.GetChromozomes();
-    //cell.SmallMutationDNA('A', 'C', 2, 2);
-    //cell.ReverseMutationDNA("TCAG", 2);
-    cell.FindLongestPalindrome(2);
-
-    
+    Cell* cell = new Cell(2);
+    cell->GetChromozomes();
+    cell->CellDeath(cell);
+    //cell->SmallMutationDNA('A', 'C', 2, 1);
+    cell->BigMutationDNA("ACAT", 1, "CGAC", 2);
 }
 
-//genome.MakeDNAoutofRNA(genome.GetRNA());
-    //genome.SmallMutationRNA('A', 'C', 2);
-    //genome.SmallMutationDNA('A', 'C', 2);
-    //string s1 = "TCAG";
-    //string s2 = "ATC";
-    //genome.BigMutationRNA(s1, s2);
-    //genome.BigMutationDNA(s1, s2);
-    //cout << genome.GetDNA() << '\t' << genome.GetSDNA() << endl;
-    //genome.ReverseMutationRNA(s1);
-    //genome.ReverseMutationDNA(s1);
+// REmider: in the menu we could possibly give an address instead of a string 
+// You should initialize the constructor in this order : 1.DNA's main thread 2.DNA's supplemetary thread 3.RNA
