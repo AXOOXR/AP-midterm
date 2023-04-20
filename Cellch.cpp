@@ -13,10 +13,30 @@ const int MATCH_SCORE = 1;
 const int MISMATCH_SCORE = 0; 
 const int GAP_SCORE = 0; 
 
+bool isSubstring(string s1, string s2){
+    int m = s1.length();
+    int n = s2.length();
+ 
+    // A loop to slide pat[] one by one
+    for (int i = 0; i <= n - m; i++){
+        int j;
+ 
+        // For the ith index we check whether string s1 matches a subtring of string s1
+        for (j = 0; j < m; j++)
+            if (s2[i + j] != s1[j])
+                break;
+ 
+        if (j == m)
+            return true;
+    }
+ 
+    return false;
+}
+
 class Genome {
 protected:
     string RNA;
-    string DNA[2];
+    string DNA[2];  
 
 public:
     // The Constructor
@@ -73,6 +93,8 @@ public:
     // using the reverse function we defined in the beginning of the program 
     void ReverseMutationRNA(string s1); 
     void ReverseMutationDNA(string s1);
+
+    friend class Cell;
 };
 
 class Cell : public Genome{
@@ -140,8 +162,8 @@ public:
     void BigMutationDNA(string s1, int n, string s2, int m);
     void SmallMutationDNA(char a, char b, int n, int m);
     void ReverseMutationDNA(string s1, int n);
-
     void FindSupplementaryPalindromes(int n);
+
 };
 
 class Animal : public Cell{
@@ -186,7 +208,7 @@ public:
     string findstem(vector <Genome> arr);
 
     // A boolean function that returns true when s1 is a substring of s2
-    bool isSubstring(string s1, string s2);
+    //bool isSubstring(string s1, string s2);
 
 };
 
@@ -261,20 +283,34 @@ void Genome::SmallMutationRNA(char a, char b, int n){
 
 void Genome::SmallMutationDNA(char a, char b, int n){
     int i = 0, j = 0;
-    while (i <= n){
+    while (i < n){
         if (DNA[0][j] == a){
             DNA[0][j] = b;
+
+            if(b == 'G')
+                DNA[1][j] = 'C';
+
+            else if (b == 'C')
+                DNA[1][j] = 'G';
+            
+            else if (b == 'T')
+                DNA[1][j] = 'A';
+            
+            else if (b == 'A')
+                DNA[1][j] = 'T';
+
             i++;
             j++;
-            if (i == n)
-                break;
         }
+
         // In this if statement we check the supplementary DNA thread as well because we search for the given 
         // character in both of the DNA threads in a parallel manner:
         // for example: DNA[0]:   (A)GCCG T
         //              DNA[1]:    T CGGC(A)
         // we found 2 'A's in the DNA threads 
-        else if(DNA[1][j] == a){
+
+        else if (DNA[1][j] == a){
+            DNA[1][j] = b;
             if(b == 'G')
                 DNA[0][j] = 'C';
 
@@ -286,19 +322,14 @@ void Genome::SmallMutationDNA(char a, char b, int n){
             
             else if (b == 'A')
                 DNA[0][j] = 'T';
-
             i++;
             j++;
-
-            if(i == n)
-                break;
         }
-
         else 
             j++;
     }
 
-    cout << "The DNA threads after small mutations: " << DNA[0] << '\t' << Supplement(DNA[0]) << endl;
+    cout << "The DNA threads after small mutations: " << DNA[0] << '\t' << DNA[1] << endl;
 }
 
 /*void Genome::BigMutationRNA(string& s1, string& s2){
@@ -432,23 +463,41 @@ void Genome::BigMutationRNA(string s1, string s2){
 }
 
 void Genome::BigMutationDNA(string s1, string s2){
-    string ss1 = Supplement(s1);
-    string ss2 = Supplement(s2);
+    string Supplement_s1 = Supplement(s1);
+    string Supplement_s2 = Supplement(s2);
 
     int x1 = DNA[0].find(s1);
-    int x2 = DNA[0].find(ss1);
+    int x2 = DNA[1].find(s1);
 
-    if(x1 < x2){
+    if((x1 < x2 || x2 == string::npos) && x1 != string::npos){
+        // Deletes s1.length() characters from x1th index of DNA[0]
         DNA[0].erase(x1, s1.length());
+        // Inserts s2 in DNA[0] starting from x1th index of DNA[0]
         DNA[0].insert(x1, s2);
+
+        // Deletes s1.length() characters from x1th index of DNA[1]
+        DNA[1].erase(x1, s1.length());
+        // Inserts Supplement_s2 in DNA[1] starting from x1th index of DNA[1]
+        DNA[1].insert(x1, Supplement_s2);
     }
 
-    else{
+    else if((x2 < x1 || x1 == string::npos) && x2 != string::npos){
+        // Deletes s1.length() characters from x2th index of DNA[0]
         DNA[0].erase(x2, s1.length());
-        DNA[0].insert(x2, ss2);
+        // Inserts Supplement_s2 in DNA[0] starting from x2th index of DNA[0]
+        DNA[0].insert(x2, Supplement_s2);
+
+        // Deletes s1.length() characters from x2th index of DNA[1]
+        DNA[1].erase(x2, s1.length());
+        // Inserts s2 in DNA[1] starting from x2th index of DNA[1]
+        DNA[1].insert(x2, s2);
+       
     }
 
-    cout << "The DNA threads after big mutations: " <<  DNA[0] << '\t' << Supplement(DNA[0]) << endl;
+    else
+        cout << "This operation is not possible." << endl;
+
+    cout << "The DNA threads after big mutations: " <<  DNA[0] << '\t' << DNA[1] << endl;
 }
 
 void Genome::ReverseMutationRNA(string s1){
@@ -469,19 +518,34 @@ void Genome::ReverseMutationRNA(string s1){
 void Genome::ReverseMutationDNA(string s1){
     string Reversed_s1 = reverse(s1);
     string Reversed_supplement_s1 = reverse(Supplement(s1));
-
+    string Supplement_s1 = Supplement(s1);
+    
     // In this section we use the find funtion which will return the index of the first occurance of 
     // the substring in the string from the given starting position 
     int y = s1.length();
-    int x = DNA[0].find(s1);
+    int x1 = DNA[0].find(s1);
+    int x2 = DNA[1].find(s1);
+    
+    if((x1 < x2 || x2 == string::npos) && x1 != string::npos){
+        // Replaces y characters from xth index by Reversed_s
+        DNA[0].replace(x1, y, Reversed_s1);
 
-    // Replaces y characters from xth index by Reversed_s
-    DNA[0].replace(x, y, Reversed_s1);
+        // Replaces y characters from xth index by Reversed_supplement_s
+        DNA[1].replace(x1, y, Reversed_supplement_s1);
+    }
 
-    // Replaces y characters from xth index by Reversed_supplement_s
-    Supplement(DNA[0]).replace(x, y, Reversed_supplement_s1);
+    else if((x2 < x1 || x1 == string::npos) && x2 != string::npos){
 
-    cout << "The DNA threads after reverse mutation: " << DNA[0] << '\t' << Supplement(DNA[0]) << endl;
+        DNA[0].replace(x2, y, Reversed_supplement_s1);
+
+        DNA[1].replace(x2, y, Reversed_s1);
+    }
+
+    else
+        cout << "This operation is not possible." << endl;
+
+    cout << "The DNA threads after reverse mutation: " << DNA[0] << '\t' << DNA[1] << endl;
+
 }
 
 // Here are the methods of class Cell
@@ -570,123 +634,159 @@ void Cell::CellDeath(){
 void Cell::SmallMutationDNA(char a, char b, int n, int m){
     // We have to minus integer m by 1 because the indexes in vectors start with 0
     // and we want to target the mth chromozome
-    string s1 = chromozomes[m - 1].GetDNA();
-    string s2 = chromozomes[m - 1].GetSDNA();
     int i = 0, j = 0;
+    while (i < n){
+        if (chromozomes[m - 1].DNA[0][j] == a){
+            chromozomes[m - 1].DNA[0][j] = b;
 
-    while (i <= n){
-        if (s1[j] == a){
-            s1[j] = b;
-            i++;
-            j++;
-            if (i == n)
-                break;
-        }
-
-        else if(s2[j] == a){
             if(b == 'G')
-                s1[j] = 'C';
+                chromozomes[m - 1].DNA[1][j] = 'C';
 
             else if (b == 'C')
-                s1[j] = 'G';
+                chromozomes[m - 1].DNA[1][j] = 'G';
             
             else if (b == 'T')
-                s1[j] = 'A';
+                chromozomes[m - 1].DNA[1][j] = 'A';
             
             else if (b == 'A')
-                s1[j] = 'T';
+                chromozomes[m - 1].DNA[1][j] = 'T';
 
             i++;
             j++;
+        }
 
-            if(i == n)
-                break;
-        }   
+        // In this if statement we check the supplementary DNA thread as well because we search for the given 
+        // character in both of the DNA threads in a parallel manner:
+        // for example: DNA[0]:   (A)GCCG T
+        //              DNA[1]:    T CGGC(A)
+        // we found 2 'A's in the DNA threads 
 
-        else
-            j++; 
+        else if (chromozomes[m - 1].DNA[1][j] == a){
+            chromozomes[m - 1].DNA[1][j] = b;
+            if(b == 'G')
+                chromozomes[m - 1].DNA[0][j] = 'C';
+
+            else if (b == 'C')
+                chromozomes[m - 1].DNA[0][j] = 'G';
+            
+            else if (b == 'T')
+                chromozomes[m - 1].DNA[0][j] = 'A';
+            
+            else if (b == 'A')
+                chromozomes[m - 1].DNA[0][j] = 'T';
+            i++;
+            j++;
+        
+        }
+        else 
+            j++;
     }
-    
+
     if(m % 10 >= 4 || m % 10 == 0)
-        cout << "The " << m << "th chromozome's DNA threads after small mutation: " << endl << s1 << '\t' << Supplement(s1) << endl;
+        cout << "The " << m << "th chromozome's DNA threads after small mutation: " << endl << chromozomes[m - 1].DNA[0] << '\t' << chromozomes[m - 1].DNA[1] << endl;
     else if(m % 10 == 3)
-        cout << "The " << m << "rd chromozome's DNA threads after small mutation: " << endl << s1 << '\t' << Supplement(s1) << endl;
+        cout << "The " << m << "rd chromozome's DNA threads after small mutation: " << endl << chromozomes[m - 1].DNA[0] << '\t' << chromozomes[m - 1].DNA[1] << endl;
     else if(m % 10 == 2)
-        cout << "The " << m << "nd chromozome's DNA threads after small mutation: " << endl << s1 << '\t' << Supplement(s1) << endl;
+        cout << "The " << m << "nd chromozome's DNA threads after small mutation: " << endl << chromozomes[m - 1].DNA[0] << '\t' << chromozomes[m - 1].DNA[1] << endl;
     else if(m % 10 == 1)
-        cout << "The " << m << "st chromozome's DNA threads after small mutation: " << endl << s1 << '\t' << Supplement(s1) << endl;
+        cout << "The " << m << "st chromozome's DNA threads after small mutation: " << endl << chromozomes[m - 1].DNA[0] << '\t' << chromozomes[m - 1].DNA[1] << endl;
 }
 
 void Cell::BigMutationDNA(string s1, int n, string s2, int m){
-    string ch1 = chromozomes[n - 1].GetDNA();
-    string ch2 = chromozomes[m - 1].GetDNA();
-    string ss1 = Supplement(s1);
-    string ss2 = Supplement(s2);
+    string ch1 = chromozomes[n - 1].DNA[0];
+    string ch11 = chromozomes[n - 1].DNA[1];
+    string ch2 = chromozomes[m - 1].DNA[0];
+    string ch22 = chromozomes[m - 1].DNA[1];
+    string Supplement_s1 = Supplement(s1);
+    string Supplement_s2 = Supplement(s2);
 
     int x1 = ch1.find(s1);
-    int x11 = ch1.find(ss1);
+    int x11 = ch11.find(s1);
     int x2 = ch2.find(s2);
-    int x22 = ch2.find(ss2);
+    int x22 = ch22.find(s2);
 
-    if(x1 < x11 || x11 == -1){
+    if((x1 < x11 || x11 == string::npos) && x1 != string::npos){
         ch1.erase(x1, s1.length());
         ch1.insert(x1, s2);
+
+        ch11.erase(x1, s1.length());
+        ch11.insert(x1, Supplement_s2);
     }
 
-    else{
+    else if ((x11 < x1 || x1 == string::npos) && x11 != string::npos){
         ch1.erase(x11, s1.length());
-        ch1.insert(x11, ss2);
+        ch1.insert(x11, Supplement_s2);
+
+        ch11.erase(x11, s1.length());
+        ch11.insert(x11, s2);
     }
 
 
-    if(x2 < x22 || x22 == -1){
+    if((x2 < x22 || x22 == string::npos) && x2 != string::npos){
         ch2.erase(x2, s2.length());
         ch2.insert(x2, s1);
+
+        ch22.erase(x2, s2.length());
+        ch22.insert(x2, Supplement_s1);
     }
 
-    else{
+    else if ((x22 < x2 || x22 == string::npos) && x22 != string::npos){
         ch2.erase(x22, s2.length());
-        ch2.insert(x22, ss1);
+        ch2.insert(x22, Supplement_s1);
+
+        ch22.erase(x22, s2.length());
+        ch22.insert(x22, s1);
     }
 
+    else
+        cout << "This operation is not possible." << endl;
+
+    chromozomes[n - 1].DNA[0] = ch1;
+    chromozomes[n - 1].DNA[1] = ch11;
+    chromozomes[m - 1].DNA[0] = ch2;
+    chromozomes[m - 1].DNA[1] = ch22;
     cout << "The given chromozomes after big mutation: " << endl;
-    cout << ch1 << '\t' << Supplement(ch1) << endl;
-    cout << ch2 << '\t' << Supplement(ch2) << endl;
+    cout << "The first given chromozome: " << chromozomes[n - 1].DNA[0] << '\t' << chromozomes[n - 1].DNA[1] << endl;
+    cout << "The second given chromozome: " << chromozomes[m - 1].DNA[0] << '\t' << chromozomes[m - 1].DNA[1] << endl;
 }
 
 void Cell::ReverseMutationDNA(string s1, int n){
-    string s2 = Supplement(s1);
-
     // We have to minus integer n by 1 because the indexes in vectors start with 0
     // and we want to target the nth chromozome
-    string s3 = chromozomes[n - 1].GetDNA();
-    string s4 = chromozomes[n - 1].GetSDNA();
+    string ch1 = chromozomes[n - 1].DNA[0];
+    string ch11 = chromozomes[n - 1].DNA[1];
     string Reversed_s1 = reverse(s1);
-    string Reversed_s2 = reverse(Supplement(s1));
-    
+    string Reversed_Supplement_s1 = reverse(Supplement(s1));
+    string Supplement_s1 = Supplement(s1);
+
     int y = s1.length();
-    int x1 = s3.find(s1);
-    int x2 = s4.find(s2);
+    int x1 = ch1.find(s1);
+    int x2 = ch11.find(s1);
 
-    if(x1 == string::npos)
-        cout << "The given string was not found in the given chromozome's main DNA thread." << endl;
-
-    if(x2 == string::npos)
-        cout << "The supplement of the given string was not found int the given chromozome's supplemantary DNA thread." << endl;
-    
-    else{
-        s3.replace(x1, y, Reversed_s1);
-        s4.replace(x2, y, Reversed_s2);
+    if((x1 < x2 || x2 == string::npos) && x1 != string::npos){
+        ch1.replace(x1, y, Reversed_s1);
+        ch11.replace(x1, y ,Reversed_Supplement_s1);
     }
 
+    else if((x2 < x1 || x1 == string::npos) && x2 != string::npos){
+        ch1.replace(x2, y, Reversed_Supplement_s1);
+        ch11.replace(x2, y, Reversed_s1);
+    }
+
+    else
+        cout << "This operation is not possbile." << endl;
+
+    chromozomes[n - 1].DNA[0] = ch1;
+    chromozomes[n - 1].DNA[1] = ch11;
+
     if(n % 10 >= 4 || n % 10 == 0)
-        cout << "The " << n << "th chromozome's DNA threads after reverse mutation: " << endl << s3 << '\t' << s4 << endl;
+        cout << "The " << n << "th chromozome's DNA threads after reverse mutation: " << endl << chromozomes[n - 1].DNA[0] << '\t' << chromozomes[n - 1].DNA[1] << endl;
     else if(n % 10 == 3)
-        cout << "The " << n << "rd chromozome's DNA threads after reverse mutation: " << endl  << s3 << '\t' << s4 << endl;
+        cout << "The " << n << "rd chromozome's DNA threads after reverse mutation: " << endl  << chromozomes[n - 1].DNA[0] << '\t' << chromozomes[n - 1].DNA[1] << endl;
     else if(n % 10 == 2)
-        cout << "The " << n << "nd chromozome's DNA threads after reverse mutation: " << endl << s3 << '\t' << s4 << endl;
+        cout << "The " << n << "nd chromozome's DNA threads after reverse mutation: " << endl << chromozomes[n - 1].DNA[0] << '\t' << chromozomes[n - 1].DNA[1] << endl;
     else if(n % 10 == 1)
-        cout << "The " << n << "st chromozome's DNA threads after reverse mutation: " << endl << s3 << '\t' << s4 << endl;
+        cout << "The " << n << "st chromozome's DNA threads after reverse mutation: " << endl << chromozomes[n - 1].DNA[0] << '\t' << chromozomes[n - 1].DNA[1] << endl;
 
 }   
 
@@ -802,6 +902,7 @@ Animal Animal::AsexualReproduction(){
     vector <int> RandIndex2;
     random_device device;
     mt19937 gen(device());
+    
 
     for (int i = 0; i < (ceil) (0.7 * NumberOfChromozomes); i++)
         RandIndex1.push_back(i);
@@ -812,23 +913,22 @@ Animal Animal::AsexualReproduction(){
     shuffle(RandIndex1.begin(), RandIndex1.end(), gen);
     shuffle(RandIndex2.begin(), RandIndex2.end(), gen);
 
-    for (int i = 0; i < (ceil) (0.7 * NumberOfChromozomes); i++){
-        //cout << "!" << endl;
-        //cout << RandIndex1[i] << '\t';
-        //cout << endl;
+    for (int i = 0; i < (ceil) (0.7 * NumberOfChromozomes); i++)
         animal2.chromozomes.push_back(chromozomes[RandIndex1[i]]);
-    }
+    
 
     for (int i = 0; i < NumberOfChromozomes; i++)
         chromozomes.push_back(chromozomes[i]);
 
-    for (int i = 0; i < (NumberOfChromozomes - (ceil) (0.7 * NumberOfChromozomes)); i++){
-        //cout << "!!" << endl;
-        //cout << RandIndex2[i] << '\t';
-        //cout << endl;
+    for (int i = 0; i < (NumberOfChromozomes - (ceil) (0.7 * NumberOfChromozomes)); i++)
         animal2.chromozomes.push_back(chromozomes[RandIndex2[i]]); 
-    }
     
+    
+    animal2.NumberOfChromozomes = NumberOfChromozomes;
+    
+    for(int i = 0; i < NumberOfChromozomes; i++)
+        chromozomes.pop_back();
+
     return animal2;
 }
 
@@ -890,40 +990,49 @@ void Animal::AnimalDeath(){
     }
 }
 
-void Animal::operator+ (Animal animal2){
+void Animal::operator+ (Animal animal){
     Animal animal3(0);
-    AsexualReproduction();
-    animal2.AsexualReproduction();
-
-    if(animal2.AsexualReproduction().GetNumberOfChromozomes() % 2 != 0 || AsexualReproduction().GetNumberOfChromozomes() % 2 != 0)
-        cout << "The Asexually reproduced animals' number of chromozomes is odd, thus sexual reproduction is not possible." << endl;
-
-    else if(!(AsexualReproduction() == animal2.AsexualReproduction()))
-        cout << "The Asexually reproduced animals are not of the same type." << endl;
-
-    else{
+    Animal animal1 = AsexualReproduction();
+    Animal animal2 = animal.AsexualReproduction();
+    
+    if(animal1 == animal2 && animal1.GetNumberOfChromozomes() % 2 == 0){
         vector <int> RandIndex1;
         vector <int> RandIndex2;
         random_device device;
         mt19937 gen(device());
 
-        for (int i = 0; i < AsexualReproduction().GetNumberOfChromozomes(); i++){
-            RandIndex1.push_back(i);
+        for (int i = 0; i < animal1.GetNumberOfChromozomes(); i++){
+            RandIndex1.push_back(i);            
             RandIndex2.push_back(i);
         }
 
-        while(!(animal3 == animal2.AsexualReproduction() && animal3 == AsexualReproduction())){
+        while(!(animal3 == animal2 && animal3 == animal1)){
             shuffle(RandIndex1.begin(), RandIndex1.end(), gen);
             shuffle(RandIndex2.begin(), RandIndex2.end(), gen);
 
-            for(int i = 0; (i < AsexualReproduction().GetNumberOfChromozomes() / 2); i++){
+            animal3.chromozomes.clear();
+            animal3.NumberOfChromozomes = animal1.NumberOfChromozomes;
+
+            for(int i = 0; i < (animal1.GetNumberOfChromozomes() / 2); i++){
                 animal3.chromozomes.push_back(chromozomes[RandIndex1[i]]);
-                animal3.chromozomes.push_back(chromozomes[RandIndex2[i]]);
+                animal3.chromozomes.push_back(animal2.chromozomes[RandIndex2[i]]);
             }
         }
-    }
+    cout << "check" << endl;
+    animal.GetChromozomes();
+    cout << "mate" << endl;
+
+    cout << "The sexually reproduced animal from the two given animals is: " << endl;
     animal3.GetChromozomes();
+    }
+
+    else if (NumberOfChromozomes % 2 != 0 || animal2.GetNumberOfChromozomes() % 2 != 0)
+        cout << "The asexually reproduced animals cells' do not have even number of chromozomes.";
+
+    else
+        cout << "The asexually reproduced animals are not of the same type." << endl;
 }
+
 // Here are the methods of class Virus
 
 string Virus::findstem(vector <Genome> arr){
@@ -960,7 +1069,7 @@ string Virus::findstem(vector <Genome> arr){
 	return res;
 }
 
-bool Virus::isSubstring(string s1, string s2){
+/*bool Virus::isSubstring(string s1, string s2){
     int m = s1.length();
     int n = s2.length();
  
@@ -978,7 +1087,7 @@ bool Virus::isSubstring(string s1, string s2){
     }
  
     return false;
-}
+}*/
 
 bool Virus::isVirusHarmful(Animal animal){
     vector <Genome> DNA;
@@ -997,15 +1106,26 @@ bool Virus::isVirusHarmful(Animal animal){
 }
 
 int main(){
-    Animal animal1(1);
-    Animal animal2(1);
-    cout << animal1.Similarity(animal2);
-    if(animal1 == animal2)
-        cout << "YES" << endl;
-        
-    animal1.AsexualReproductionDisplay();
+    Animal animal1(2);
+    Animal animal2(2);
 
-    animal1 + animal2;
+    //animal1.AsexualReproduction();
+    //animal2.AsexualReproduction();
+    cout << "check2" << endl;
+    animal1.GetChromozomes();
+    cout << "mate2" << endl;
+
+    animal1.AsexualReproduction();
+
+    cout << endl;
+
+    cout << "check3" <<endl;
+
+    animal1.GetChromozomes();
+
+    cout << "mate3" << endl;
+
+
 
 }
 
@@ -1014,4 +1134,3 @@ int main(){
 //cell->CellDeath();
 
 // REmider: in the menu we could possibly give an address instead of a string 
-// You should initialize the constructor in this order : 1.DNA's main thread 2.DNA's supplemetary thread 3.RNA
